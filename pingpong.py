@@ -21,8 +21,14 @@ TEAL = (0,255,255)
 
 
 ball = pygame.Rect(100, 150, 40, 40)
-#pygame.draw.circle(window, BLACK, (200, 500), 20, 0)
 
+bricks = []
+
+
+for i in range(10):
+    for j in range(5):
+        color = [RED, GREEN, BLUE, TEAL, PINK]
+        bricks.append([pygame.Rect((i*40) + 2 , (j*25) + 5, 36, 20), color[j]])
 
 while True:
     for event in pygame.event.get():
@@ -32,21 +38,26 @@ while True:
 
     window.fill(WHITE)
             
-    for i in range(10):
-        for j in range(5):
-            color = [RED, GREEN, BLUE, TEAL, PINK]
-            pygame.draw.rect(window, color[j], ((i*40) + 2 , (j*25) + 5, 36, 20))
-            
-
             
     ball.left += SPEED*DIR_X
     ball.top += SPEED*DIR_Y
 
-    if ball.left < 0 or ball.left > 360:
+    if ball.left <= 0 or ball.right >= 400:
         DIR_X *= -1
-    if ball.top < 0 or ball.top > 560:
+    if ball.top <= 0 or ball.bottom >= 600:
         DIR_Y *= -1
+
+
+    for brick in bricks:
+        if ball.colliderect(brick[0]):
+            bricks.remove(brick)
+            DIR_X *= -1
+            DIR_Y *= -1
+        else:
+            pygame.draw.rect(window, brick[1], brick[0], 0)
+        
+    pygame.draw.circle(window, BLACK, ball.center, 20)
     
-    pygame.draw.circle(window, BLACK, ball.center, 20)   
+        
     pygame.display.update()
     time.sleep(0.02)
